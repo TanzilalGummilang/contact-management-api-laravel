@@ -151,7 +151,6 @@ class UserTest extends TestCase
     }
     public function test_get_current_user_unauthorized()
     {
-        $this->withoutExceptionHandling();
         $this->seed(UserSeeder::class);
         $this->get('/api/users/current')
             ->assertStatus(401)
@@ -170,6 +169,68 @@ class UserTest extends TestCase
             ->assertJson([
                 'errors' => [
                     'message' => ['Unauthorized.'],
+                ]
+            ]);
+    }
+
+    public function test_update_current_user_name_successfully()
+    {
+
+        $this->seed(UserSeeder::class);
+        $oldName = User::query()->where('username', $this->username)->first()->name;
+
+        $this->patch('/api/users/current', [
+            'name' => 'John Wick',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => $this->username,
+                    'name' => 'John Wick',
+                ]
+            ]);
+
+        $newName = User::query()->where('username', $this->username)->first()->name;
+        self::assertNotEquals($oldName, $newName);
+    }
+
+    public function test_update_current_user_password_successfully()
+    {
+
+        $this->seed(UserSeeder::class);
+        $oldPassword = User::query()->where('username', $this->username)->first()->password;
+
+        $this->patch('/api/users/current', [
+            'password' => 'newtest',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => $this->username,
+                    'name' => $this->name,
+                ]
+            ]);
+
+        $newPassword = User::query()->where('username', $this->username)->first()->password;
+        self::assertNotEquals($oldPassword, $newPassword);
+    }
+
+    public function test_update_current_user_min_length()
+    {
+        $this->seed(UserSeeder::class);
+
+        $this->patch('/api/users/current', [
+            'name' => 'John',
+            'password' => 'wi',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'name' => ['The name field must be at least 6 characters.'],
+                    'password' => ['The password field must be at least 3 characters.'],
                 ]
             ]);
     }

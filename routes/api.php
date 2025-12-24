@@ -24,5 +24,6 @@ Route::prefix('/users')->group(function () {
     Route::post('/login', [UserController::class, 'login']);
     Route::middleware(ApiAuthMiddleware::class)->group(function () {
         Route::get('/current', [UserController::class, 'getCurrentUser']);
+        Route::patch('/current', [UserController::class, 'updateCurrentUser']);
     });
 });
