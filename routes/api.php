@@ -18,5 +18,5 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('/users', [UserController::class, 'register']);
+Route::post('/users/register', [UserController::class, 'register']);
 Route::post('/users/login', [UserController::class, 'login']);

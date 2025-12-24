@@ -11,25 +11,25 @@ class UserTest extends TestCase
     private string $name = 'John Doe';
     private string $username = 'johndoe';
     private string $password = 'test';
-    
+
     public function test_register_successfully()
     {
-        $this->post('/api/users', [
-            'name' => 'John Doe',
-            'username' => 'johndoe',
-            'password' => 'password',
+        $this->post('/api/users/register', [
+            'name' => $this->name,
+            'username' => $this->username,
+            'password' => $this->password,
         ])->assertStatus(201)
             ->assertJson([
                 'data' => [
-                    'name' => 'John Doe',
-                    'username' => 'johndoe',
+                    'name' => $this->name,
+                    'username' => $this->username,
                 ]
             ]);
     }
 
     public function test_register_required()
     {
-        $this->post('/api/users', [
+        $this->post('/api/users/register', [
             'name' => '',
             'username' => '',
             'password' => '',
@@ -38,14 +38,14 @@ class UserTest extends TestCase
                 'errors' => [
                     'name' => ['The name field is required.'],
                     'username' => ['The username field is required.'],
-                    'password' => ['The password field is required.'],  
+                    'password' => ['The password field is required.'],
                 ]
             ]);
     }
 
     public function test_register_min_length()
     {
-        $this->post('/api/users', [
+        $this->post('/api/users/register', [
             'name' => 'John',
             'username' => 'john',
             'password' => 'pa',
@@ -62,13 +62,13 @@ class UserTest extends TestCase
     public function test_register_username_exist()
     {
         $this->test_register_successfully();
-        $this->post('/api/users', [
-            'name' => 'John Doe',
-            'username' => 'johndoe',
-            'password' => 'password',
+        $this->post('/api/users/register', [
+            'name' => $this->name,
+            'username' => $this->username,
+            'password' => $this->password,
         ])->assertStatus(400)
             ->assertJson([
-                'errors' => [                    
+                'errors' => [
                     'username' => ['The username has already been taken.'],
                 ]
             ]);
@@ -97,7 +97,7 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
         $this->post('/api/users/login', [
             'username' => 'johnwick',
-            'password' => 'test',
+            'password' => $this->password,
         ])->assertStatus(401)
             ->assertJson([
                 'errors' => [
@@ -110,7 +110,7 @@ class UserTest extends TestCase
     {
         $this->seed(UserSeeder::class);
         $this->post('/api/users/login', [
-            'username' => 'johndoe',
+            'username' => $this->username,
             'password' => 'testing',
         ])->assertStatus(401)
             ->assertJson([
