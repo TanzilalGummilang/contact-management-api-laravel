@@ -2,27 +2,24 @@
 
 namespace Tests\Feature;
 
+use App\Constants\UserConstants;
 use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-    private string $name = 'John Doe';
-    private string $username = 'johndoe';
-    private string $password = 'test';
-
     public function test_register_successfully()
     {
         $this->post('/api/users/register', [
-            'name' => $this->name,
-            'username' => $this->username,
-            'password' => $this->password,
+            'name' => UserConstants::NAME,
+            'username' => UserConstants::USERNAME,
+            'password' => UserConstants::PASSWORD,
         ])->assertStatus(201)
             ->assertJson([
                 'data' => [
-                    'name' => $this->name,
-                    'username' => $this->username,
+                    'name' => UserConstants::NAME,
+                    'username' => UserConstants::USERNAME,
                 ]
             ]);
     }
@@ -63,9 +60,9 @@ class UserTest extends TestCase
     {
         $this->test_register_successfully();
         $this->post('/api/users/register', [
-            'name' => $this->name,
-            'username' => $this->username,
-            'password' => $this->password,
+            'name' => UserConstants::NAME,
+            'username' => UserConstants::USERNAME,
+            'password' => UserConstants::PASSWORD,
         ])->assertStatus(400)
             ->assertJson([
                 'errors' => [
@@ -78,17 +75,17 @@ class UserTest extends TestCase
     {
         $this->seed(UserSeeder::class);
         $this->post('/api/users/login', [
-            'username' => $this->username,
-            'password' => $this->password,
+            'username' => UserConstants::USERNAME,
+            'password' => UserConstants::PASSWORD,
         ])->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'name' => $this->name,
-                    'username' => $this->username,
+                    'name' => UserConstants::NAME,
+                    'username' => UserConstants::USERNAME,
                 ]
             ]);
 
-        $user = User::query()->where('username', $this->username)->first();
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
         self::assertNotNull($user->token);
     }
 
@@ -97,7 +94,7 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
         $this->post('/api/users/login', [
             'username' => 'johnwick',
-            'password' => $this->password,
+            'password' => UserConstants::PASSWORD,
         ])->assertStatus(401)
             ->assertJson([
                 'errors' => [
@@ -110,7 +107,7 @@ class UserTest extends TestCase
     {
         $this->seed(UserSeeder::class);
         $this->post('/api/users/login', [
-            'username' => $this->username,
+            'username' => UserConstants::USERNAME,
             'password' => 'testing',
         ])->assertStatus(401)
             ->assertJson([
@@ -144,8 +141,8 @@ class UserTest extends TestCase
         ])->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'username' => $this->username,
-                    'name' => $this->name,
+                    'username' => UserConstants::USERNAME,
+                    'name' => UserConstants::NAME,
                 ]
             ]);
     }
@@ -177,7 +174,7 @@ class UserTest extends TestCase
     {
 
         $this->seed(UserSeeder::class);
-        $oldName = User::query()->where('username', $this->username)->first()->name;
+        $oldName = User::query()->where('username', UserConstants::USERNAME)->first()->name;
 
         $this->patch('/api/users/current', [
             'name' => 'John Wick',
@@ -186,12 +183,12 @@ class UserTest extends TestCase
         ])->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'username' => $this->username,
+                    'username' => UserConstants::USERNAME,
                     'name' => 'John Wick',
                 ]
             ]);
 
-        $newName = User::query()->where('username', $this->username)->first()->name;
+        $newName = User::query()->where('username', UserConstants::USERNAME)->first()->name;
         self::assertNotEquals($oldName, $newName);
     }
 
@@ -199,7 +196,7 @@ class UserTest extends TestCase
     {
 
         $this->seed(UserSeeder::class);
-        $oldPassword = User::query()->where('username', $this->username)->first()->password;
+        $oldPassword = User::query()->where('username', UserConstants::USERNAME)->first()->password;
 
         $this->patch('/api/users/current', [
             'password' => 'newtest',
@@ -208,12 +205,12 @@ class UserTest extends TestCase
         ])->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'username' => $this->username,
-                    'name' => $this->name,
+                    'username' => UserConstants::USERNAME,
+                    'name' => UserConstants::NAME,
                 ]
             ]);
 
-        $newPassword = User::query()->where('username', $this->username)->first()->password;
+        $newPassword = User::query()->where('username', UserConstants::USERNAME)->first()->password;
         self::assertNotEquals($oldPassword, $newPassword);
     }
 
@@ -245,7 +242,7 @@ class UserTest extends TestCase
                 'data' => true
             ]);
 
-        $user = User::query()->where('username', $this->username)->first();
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
         self::assertNull($user->token);
     }
 

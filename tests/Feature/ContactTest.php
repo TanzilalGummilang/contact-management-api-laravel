@@ -12,30 +12,24 @@ use Tests\TestCase;
 
 class ContactTest extends TestCase
 {
-    private string $token = 'test';
-    private string $firstName = 'Jane';
-    private string $lastName = 'Doe';
-    private string $email = 'janedoe@test.com';
-    private string $phone = '088800000001';
-
     public function test_create_successfully()
     {
         $this->seed(UserSeeder::class);
         $this->post('/api/contacts', [
-            'first_name' => $this->firstName,
-            'last_name' => $this->lastName,
-            'email' => $this->email,
-            'phone' => $this->phone,
+            'first_name' => ContactConstants::FIRST_NAME,
+            'last_name' => ContactConstants::LAST_NAME,
+            'email' => ContactConstants::EMAIL,
+            'phone' => ContactConstants::PHONE,
         ], [
-            'Authorization' => $this->token
+            'Authorization' => UserConstants::TOKEN
         ])->assertStatus(201)
             ->assertJson([
                 'data' => [
                     'id' => 1,
-                    'first_name' => $this->firstName,
-                    'last_name' => $this->lastName,
-                    'email' => $this->email,
-                    'phone' => $this->phone,
+                    'first_name' => ContactConstants::FIRST_NAME,
+                    'last_name' => ContactConstants::LAST_NAME,
+                    'email' => ContactConstants::EMAIL,
+                    'phone' => ContactConstants::PHONE,
                     'user_id' => 1
                 ]
             ]);
@@ -46,11 +40,11 @@ class ContactTest extends TestCase
         $this->seed(UserSeeder::class);
         $this->post('/api/contacts', [
             'first_name' => '',
-            'last_name' => $this->lastName,
+            'last_name' => ContactConstants::LAST_NAME,
             'email' => 'johndoe',
-            'phone' => $this->phone,
+            'phone' => ContactConstants::PHONE,
         ], [
-            'Authorization' => $this->token
+            'Authorization' => UserConstants::TOKEN
         ])->assertStatus(400)
             ->assertJson([
                 'errors' => [
@@ -68,10 +62,10 @@ class ContactTest extends TestCase
     {
         $this->seed(UserSeeder::class);
         $this->post('/api/contacts', [
-            'first_name' => $this->firstName,
-            'last_name' => $this->lastName,
-            'email' => $this->email,
-            'phone' => $this->phone,
+            'first_name' => ContactConstants::FIRST_NAME,
+            'last_name' => ContactConstants::LAST_NAME,
+            'email' => ContactConstants::EMAIL,
+            'phone' => ContactConstants::PHONE,
         ], [
             'Authorization' => 'invalid-token'
         ])->assertStatus(401)
