@@ -16,10 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::prefix('/users')->group(function () {
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
@@ -33,5 +29,6 @@ Route::prefix('/users')->group(function () {
 Route::prefix('/contacts')->group(function () {
     Route::middleware(ApiAuthMiddleware::class)->group(function () {
         Route::post('/', [ContactController::class, 'createContact']);
+        Route::get('/{id}', [ContactController::class, 'getContactById'])->where('id', '[0-9]+');
     });
 });
