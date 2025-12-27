@@ -177,4 +177,33 @@ class ContactTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_delete_contact_successfully()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
+        $contact = Contact::query()->where('user_id', $user->id)->first();
+
+        $this->delete('/api/contacts/' . $contact->id, [], [
+            'Authorization' => UserConstants::TOKEN
+        ])->assertStatus(200)
+            ->assertJson(['data' => true]);
+    }
+
+    public function test_delete_not_found()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->delete('/api/contacts/' . ($contact->id + 1), [], [
+            'Authorization' => 'test'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    "message" => [
+                        "Contact not found."
+                    ]
+                ]
+            ]);
+    }
 }
