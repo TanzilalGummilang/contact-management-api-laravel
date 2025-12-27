@@ -20,5 +20,12 @@ class UserSeeder extends Seeder
            'password' => Hash::make(UserConstants::PASSWORD),
            'token' => UserConstants::TOKEN
         ]);
+
+        User::query()->create([
+           'name' => UserConstants::NAME . '2',
+           'username' => UserConstants::USERNAME . '2',
+           'password' => Hash::make(UserConstants::PASSWORD) . '2',
+           'token' => UserConstants::TOKEN . '2'
+        ]);
     }
 }

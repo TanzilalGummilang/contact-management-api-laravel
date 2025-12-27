@@ -96,4 +96,38 @@ class ContactTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_get_contact_by_id_not_found()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->get('/api/contacts/' . ($contact->id + 1), [
+            'Authorization' => UserConstants::TOKEN
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Contact not found.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function test_get_other_user_contact()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->get('/api/contacts/' . $contact->id, [
+            'Authorization' => UserConstants::TOKEN . '2'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Contact not found.'
+                    ]
+                ]
+            ]);
+    }
 }
