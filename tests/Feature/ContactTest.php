@@ -130,4 +130,51 @@ class ContactTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_update_contact_successfully()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
+        $contact = Contact::query()->where('user_id', $user->id)->first();
+
+        $this->put('/api/contacts/' . $contact->id, [
+            'first_name' => 'test2',
+            'last_name' => 'test2',
+            'email' => 'test2@test.com',
+            'phone' => '',
+        ], [
+            'Authorization' => UserConstants::TOKEN
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'first_name' => 'test2',
+                    'last_name' => 'test2',
+                    'email' => 'test2@test.com',
+                    'phone' => '',
+                ]
+            ]);
+    }
+
+    public function test_update_validation_error()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
+        $contact = Contact::query()->where('user_id', $user->id)->first();
+
+        $this->put('/api/contacts/' . $contact->id, [
+            'first_name' => '',
+            'last_name' => 'test2',
+            'email' => 'test2@test.com',
+            'phone' => '1111112',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'first_name' => [
+                        'The first name field is required.'
+                    ]
+                ]
+            ]);
+    }
 }
