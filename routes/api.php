@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -33,5 +34,11 @@ Route::prefix('/contacts')->group(function () {
         Route::get('/{id}', [ContactController::class, 'getContactById'])->where('id', '[0-9]+');
         Route::put('/{id}', [ContactController::class, 'updateContact'])->where('id', '[0-9]+');
         Route::delete('/{id}', [ContactController::class, 'deleteContact'])->where('id', '[0-9]+');
+
+        Route::post('/{contactId}/addresses', [AddressController::class, 'createAddress'])
+            ->where('contactId', '[0-9]+');
+        Route::get('/{contactId}/addresses/{addressId}', [AddressController::class, 'getAddressById'])
+            ->where('contactId', '[0-9]+')
+            ->where('addressId', '[0-9]+');
     });
 });

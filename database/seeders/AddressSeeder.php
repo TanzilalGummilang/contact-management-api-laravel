@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Constants\AddressConstants;
+use App\Models\Address;
+use App\Models\Contact;
 use Illuminate\Database\Seeder;
 
 class AddressSeeder extends Seeder
@@ -12,6 +14,14 @@ class AddressSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $contact = Contact::query()->limit(1)->first();
+        Address::create([
+            'contact_id' => $contact->id,
+            'street' => AddressConstants::STREET,
+            'city' => AddressConstants::CITY,
+            'province' => AddressConstants::PROVINCE,
+            'country' => AddressConstants::COUNTRY,
+            'postal_code' => AddressConstants::POSTAL_CODE
+        ]);
     }
 }
