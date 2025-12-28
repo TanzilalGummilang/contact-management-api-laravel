@@ -134,7 +134,8 @@ class AddressTest extends TestCase
         $contact = Contact::query()->where('user_id', $user->id)->first();
         $address = Address::query()->where('contact_id', $contact->id)->first();
 
-        $this->put('/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
+        $this->put(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
             [
                 'street' => 'Forgotten Street',
                 'city' => 'Forgotten City',
@@ -164,7 +165,8 @@ class AddressTest extends TestCase
         $contact = Contact::query()->where('user_id', $user->id)->first();
         $address = Address::query()->where('contact_id', $contact->id)->first();
 
-        $this->put('/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
+        $this->put(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
             [
                 'street' => 'Forgotten Street',
                 'city' => 'Forgotten City',
@@ -190,7 +192,8 @@ class AddressTest extends TestCase
         $contact = Contact::query()->where('user_id', $user->id)->first();
         $address = Address::query()->where('contact_id', $contact->id)->first();
 
-        $this->put('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),
+        $this->put(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),
             [
                 'street' => 'Forgotten Street',
                 'city' => 'Forgotten City',
@@ -235,6 +238,50 @@ class AddressTest extends TestCase
             ->assertJson([
                 'errors' => [
                     'message' => ['Address not found.']
+                ]
+            ]);
+    }
+
+    public function test_list_success()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
+        $contact = Contact::query()->where('user_id', $user->id)->first();
+
+        $this->get(
+            '/api/contacts/' . $contact->id . '/addresses',
+            [
+                'Authorization' => UserConstants::TOKEN
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    [
+                        'street' => AddressConstants::STREET,
+                        'city' => AddressConstants::CITY,
+                        'province' => AddressConstants::PROVINCE,
+                        'country' => AddressConstants::COUNTRY,
+                        'postal_code' => AddressConstants::POSTAL_CODE,
+                    ]
+                ]
+            ]);
+    }
+
+    public function test_list_not_found()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
+        $contact = Contact::query()->where('user_id', $user->id)->first();
+
+        $this->get(
+            '/api/contacts/' . ($contact->id + 1) . '/addresses',
+            [
+                'Authorization' => UserConstants::TOKEN
+            ]
+        )->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => ['Contact not found.']
                 ]
             ]);
     }

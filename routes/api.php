@@ -40,6 +40,8 @@ Route::prefix('/contacts')->group(function () {
         Route::get('/{contactId}/addresses/{addressId}', [AddressController::class, 'get'])
             ->where('contactId', '[0-9]+')
             ->where('addressId', '[0-9]+');
+        Route::get('/{contactId}/addresses', [AddressController::class, 'list'])
+            ->where('contactId', '[0-9]+');
         Route::put('/{contactId}/addresses/{addressId}', [AddressController::class, 'update'])
             ->where('contactId', '[0-9]+')
             ->where('addressId', '[0-9]+');
