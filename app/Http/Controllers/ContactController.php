@@ -21,7 +21,7 @@ class ContactController extends Controller
         $this->contactService = $contactService;
     }
     
-    public function createContact(ContactCreateRequest $request): JsonResponse
+    public function create(ContactCreateRequest $request): JsonResponse
     {
         $data = $request->validated();
         $user = Auth::user();
@@ -33,7 +33,7 @@ class ContactController extends Controller
         return (new ContactResource($contact))->response()->setStatusCode(201);
     }
 
-    public function getContactById(int $id): ContactResource
+    public function get(int $id): ContactResource
     {
         $user = Auth::user();
         $contact = $this->contactService->getContactById($id, $user);
@@ -41,7 +41,7 @@ class ContactController extends Controller
         return new ContactResource($contact);
     }
 
-    public function updateContact(int $id, ContactCreateRequest $request): ContactResource
+    public function update(int $id, ContactCreateRequest $request): ContactResource
     {
         $user = Auth::user();
         $contact = $this->contactService->getContactById($id, $user);
@@ -52,7 +52,7 @@ class ContactController extends Controller
         return (new ContactResource($contact));
     }
 
-    public function deleteContact(int $id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $user = Auth::user();
         $contact = $this->contactService->getContactById($id, $user);
@@ -61,7 +61,7 @@ class ContactController extends Controller
         return response()->json(['data' => true], 200);
     }
 
-    public function searchContacts(Request $request): ContactCollection
+    public function search(Request $request): ContactCollection
     {
         $user = Auth::user();
         $page = $request->input('page', 1);

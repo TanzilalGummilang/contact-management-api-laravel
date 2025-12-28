@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class ContactTest extends TestCase
 {
-    public function test_create_successfully()
+    public function test_create_success()
     {
         $this->seed(UserSeeder::class);
         $this->post('/api/contacts', [
@@ -27,14 +27,22 @@ class ContactTest extends TestCase
         ])->assertStatus(201)
             ->assertJson([
                 'data' => [
-                    'id' => 1,
                     'first_name' => ContactConstants::FIRST_NAME,
                     'last_name' => ContactConstants::LAST_NAME,
                     'email' => ContactConstants::EMAIL,
                     'phone' => ContactConstants::PHONE,
-                    'user_id' => 1
                 ]
             ]);
+        
+        $user = User::query()->where('username', UserConstants::USERNAME)->first();
+        self::assertEquals(1, $user->contacts()->count());
+
+        $contact = Contact::query()->where('user_id', $user->id)->first();
+        self::assertEquals(ContactConstants::FIRST_NAME, $contact->first_name);
+        self::assertEquals(ContactConstants::LAST_NAME, $contact->last_name);
+        self::assertEquals(ContactConstants::EMAIL, $contact->email);
+        self::assertEquals(ContactConstants::PHONE, $contact->phone);
+        self::assertEquals($user->id, $contact->user_id);
     }
 
     public function test_create_failed()
@@ -80,7 +88,7 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function test_get_contact_by_id_successfully()
+    public function test_get_success()
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
         $user = User::query()->where('username', UserConstants::USERNAME)->first();
@@ -99,7 +107,7 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function test_get_contact_by_id_not_found()
+    public function test_get_not_found()
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
         $contact = Contact::query()->limit(1)->first();
@@ -133,7 +141,7 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function test_update_contact_successfully()
+    public function test_update_success()
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
         $user = User::query()->where('username', UserConstants::USERNAME)->first();
@@ -180,7 +188,7 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function test_delete_contact_successfully()
+    public function test_delete_success()
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
         $user = User::query()->where('username', UserConstants::USERNAME)->first();
@@ -209,7 +217,7 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function test_search_contacts_by_first_name()
+    public function test_search_by_first_name()
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
@@ -225,7 +233,7 @@ class ContactTest extends TestCase
         self::assertEquals(20, $response['meta']['total']);
     }
 
-    public function test_search_contacts_by_last_name()
+    public function test_search_by_last_name()
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
@@ -241,7 +249,7 @@ class ContactTest extends TestCase
         self::assertEquals(20, $response['meta']['total']);
     }
 
-    public function test_search_contacts_by_email()
+    public function test_search_by_email()
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
@@ -257,7 +265,7 @@ class ContactTest extends TestCase
         self::assertEquals(20, $response['meta']['total']);
     }
 
-    public function test_search_contacts_by_phone()
+    public function test_search_by_phone()
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
@@ -273,7 +281,7 @@ class ContactTest extends TestCase
         self::assertEquals(20, $response['meta']['total']);
     }
 
-    public function test_search_contacts_not_found()
+    public function test_search_not_found()
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
@@ -289,7 +297,7 @@ class ContactTest extends TestCase
         self::assertEquals(0, $response['meta']['total']);
     }
 
-    public function test_search_contacts_with_page()
+    public function test_search_with_page()
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 

@@ -29,11 +29,11 @@ Route::prefix('/users')->group(function () {
 
 Route::prefix('/contacts')->group(function () {
     Route::middleware(ApiAuthMiddleware::class)->group(function () {
-        Route::post('/', [ContactController::class, 'createContact']);
-        Route::get('/search', [ContactController::class, 'searchContacts']);
-        Route::get('/{id}', [ContactController::class, 'getContactById'])->where('id', '[0-9]+');
-        Route::put('/{id}', [ContactController::class, 'updateContact'])->where('id', '[0-9]+');
-        Route::delete('/{id}', [ContactController::class, 'deleteContact'])->where('id', '[0-9]+');
+        Route::post('/', [ContactController::class, 'create']);
+        Route::get('/search', [ContactController::class, 'search']);
+        Route::get('/{id}', [ContactController::class, 'get'])->where('id', '[0-9]+');
+        Route::put('/{id}', [ContactController::class, 'update'])->where('id', '[0-9]+');
+        Route::delete('/{id}', [ContactController::class, 'delete'])->where('id', '[0-9]+');
 
         Route::post('/{contactId}/addresses', [AddressController::class, 'create'])
             ->where('contactId', '[0-9]+');
@@ -45,6 +45,8 @@ Route::prefix('/contacts')->group(function () {
         Route::put('/{contactId}/addresses/{addressId}', [AddressController::class, 'update'])
             ->where('contactId', '[0-9]+')
             ->where('addressId', '[0-9]+');
-        Route::delete('/{contactId}/addresses/{addressId}', [AddressController::class, 'delete']);
+        Route::delete('/{contactId}/addresses/{addressId}', [AddressController::class, 'delete'])
+            ->where('contactId', '[0-9]+')
+            ->where('addressId', '[0-9]+');
     });
 });
