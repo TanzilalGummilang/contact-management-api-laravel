@@ -43,5 +43,6 @@ Route::prefix('/contacts')->group(function () {
         Route::put('/{contactId}/addresses/{addressId}', [AddressController::class, 'update'])
             ->where('contactId', '[0-9]+')
             ->where('addressId', '[0-9]+');
+        Route::delete('/{contactId}/addresses/{addressId}', [AddressController::class, 'delete']);
     });
 });
