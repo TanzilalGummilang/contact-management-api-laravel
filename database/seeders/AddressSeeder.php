@@ -23,5 +23,14 @@ class AddressSeeder extends Seeder
             'country' => AddressConstants::COUNTRY,
             'postal_code' => AddressConstants::POSTAL_CODE
         ]);
+
+        Address::create([
+            'contact_id' => $contact->id,
+            'street' => AddressConstants::STREET . '2',
+            'city' => AddressConstants::CITY . '2',
+            'province' => AddressConstants::PROVINCE . '2',
+            'country' => AddressConstants::COUNTRY . '2',
+            'postal_code' => AddressConstants::POSTAL_CODE . '2'
+        ]);
     }
 }

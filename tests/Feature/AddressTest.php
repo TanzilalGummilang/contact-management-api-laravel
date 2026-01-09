@@ -117,7 +117,7 @@ class AddressTest extends TestCase
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
         $address = Address::query()->limit(1)->first();
 
-        $this->get('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [
+        $this->get('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 100), [
             'Authorization' => 'test'
         ])->assertStatus(404)
             ->assertJson([
@@ -193,7 +193,7 @@ class AddressTest extends TestCase
         $address = Address::query()->where('contact_id', $contact->id)->first();
 
         $this->put(
-            '/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),
+            '/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 100),
             [
                 'street' => 'Forgotten Street',
                 'city' => 'Forgotten City',
@@ -232,7 +232,7 @@ class AddressTest extends TestCase
         $contact = Contact::query()->where('user_id', $user->id)->first();
         $address = Address::query()->where('contact_id', $contact->id)->first();
 
-        $this->delete('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [], [
+        $this->delete('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 100), [], [
             'Authorization' => UserConstants::TOKEN
         ])->assertStatus(404)
             ->assertJson([
